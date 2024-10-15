@@ -1,0 +1,112 @@
+run:
+  skip-dirs:
+    - pkg/tmp
+    # This is the cache dir in CI.
+    - .go
+
+
+linters:
+  disable-all: true
+  max-issues-per-linter: 0
+  enable:
+    - govet
+    - gosimple
+    - staticcheck
+    - ineffassign
+    - errcheck
+    - bodyclose
+    # - revive
+    - gofmt
+    - goconst
+    - nakedret
+    # - dupl
+    # - gosec - too many false positives and useless (never found anythig good)
+    #- gocritic
+
+issues:
+  max-issues-per-linter: 0
+  max-same-issues: 0
+
+linters-settings:
+  revive:
+    rules:
+      #default rules
+      #disabling checks for comments in exported/public functions/vars/consts
+      #- name: exported
+      #- name: blank-imports
+      - name: package-comments
+      - name: var-declaration
+      - name: dot-imports
+      # - name: var-naming # Unnecessarily strict
+      - name: indent-error-flow
+      - name: range
+      - name: errorf
+      - name: error-naming
+      - name: error-strings
+      - name: receiver-naming
+      - name: increment-decrement
+      - name: error-return
+      - name: unexported-return
+      - name: time-naming
+      - name: context-keys-type
+      - name: context-as-argument
+      #extra rules
+      - name: unexported-naming #might need to be disabled for now
+      - name: duplicated-imports
+      - name: bare-return
+      - name: empty-block
+      - name: superfluous-else
+      - name: confusing-naming
+      - name: confusing-results
+      # - name: get-return # Unnecessarily strict
+      - name: deep-exit
+      - name: unreachable-code
+      - name: unnecessary-stmt
+      - name: string-of-int
+      #- name: string-format (missing in used version?)
+      - name: unused-receiver
+      - name: if-return
+      - name: early-return
+      - name: unconditional-recursion
+      - name: identical-branches
+      - name: defer
+      - name: atomic
+      - name: waitgroup-by-value
+      - name: range-val-address
+      - name: range-val-in-closure
+      - name: call-to-gc
+      - name: struct-tag
+      - name: modifies-value-receiver
+      - name: constant-logical-expr
+      - name: redefines-builtin-id
+      #enable later when we are ready to refactor the functions/methods
+      #- name: cyclomatic
+      #  arguments: [5]
+      #- name: cognitive-complexity
+      #  arguments: [7]
+      #- name: nested-structs  (missing in used version?)
+      #will be useful later
+      #- name: function-length
+      #  arguments: [300,0]
+      #- name: unhandled-error
+      #  arguments: ["fmt.Printf"]
+
+
+  govet:
+    #check-shadowing: true
+    enable-all: false
+  nakedret:
+    max-func-lines: 4
+  gosec:
+    # To select a subset of rules to run.
+    # Available rules: https://github.com/securego/gosec#available-rules
+    # includes:
+    #   -
+    # To specify a set of rules to explicitly exclude.
+    # Available rules: https://github.com/securego/gosec#available-rules
+    excludes:
+      # Ignore erroneous exec.Command errors when command args are user inputs.
+      - G204
+      # This one is kinda ridiculous since the implementation of io.Copy and
+      # practical usage of io.CopyN (the fix) both read into fixed-sized output buffers.
+      - G110
